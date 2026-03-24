@@ -1,0 +1,108 @@
+/* Floating Actions Container */
+.floating-actions {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  z-index: 9998;
+}
+
+/* Floating Action Button Base Styles */
+.floating-action-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.floating-action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.floating-action-btn:active {
+  transform: translateY(0);
+}
+
+/* WhatsApp Button Styles */
+.whatsapp-btn {
+  background: #25D366;
+  color: white;
+}
+
+.whatsapp-btn:hover {
+  background: #20BA5A;
+}
+
+/* AI Button Styles */
+.ai-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  animation: pulse 2s infinite;
+}
+
+.ai-btn:hover {
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46a1 100%);
+  animation: none;
+}
+
+/* Pulse Animation for AI Button */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.6);
+  }
+  100% {
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  }
+}
+
+/* Ripple Effect */
+.floating-action-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.floating-action-btn:active::before {
+  width: 120px;
+  height: 120px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .floating-actions {
+    bottom: 16px;
+    left: 16px;
+    gap: 12px;
+  }
+  
+  .floating-action-btn {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .floating-action-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+}

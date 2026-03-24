@@ -1,0 +1,125 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Cairo', 'Tajawal', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* RTL Support */
+html[dir="rtl"] body {
+  text-align: right;
+}
+
+html[dir="rtl"] {
+  direction: rtl;
+}
+
+/* Ensure text alignment follows direction */
+html[dir="rtl"] h1, 
+html[dir="rtl"] h2, 
+html[dir="rtl"] h3, 
+html[dir="rtl"] h4, 
+html[dir="rtl"] h5, 
+html[dir="rtl"] h6,
+html[dir="rtl"] p {
+  text-align: right;
+}
+
+/* RTL flex adjustments */
+html[dir="rtl"] .MuiStack-root,
+html[dir="rtl"] .flex-row {
+  flex-direction: row-reverse;
+}
+
+/* RTL margin/padding adjustments */
+html[dir="rtl"] .ml-auto {
+  margin-right: auto;
+  margin-left: 0;
+}
+
+html[dir="rtl"] .mr-auto {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Global fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Apply fade-in animation to the page content */
+.fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+/* Ensure smooth transitions between pages */
+.page-transition-wrapper {
+  width: 100%;
+  min-height: 100vh;
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Fixed sidebars spacing - all screen sizes */
+.page-transition-wrapper {
+  margin-left: 80px;
+  margin-right: 80px;
+  width: calc(100% - 160px);
+}
+
+@media (min-width: 600px) {
+  .page-transition-wrapper {
+    margin-left: 120px;
+    margin-right: 120px;
+    width: calc(100% - 240px);
+  }
+}
+
+@media (min-width: 900px) {
+  .page-transition-wrapper {
+    margin-left: 180px;
+    margin-right: 180px;
+    width: calc(100% - 360px);
+  }
+}
+
+@media (min-width: 1200px) {
+  .page-transition-wrapper {
+    margin-left: 220px;
+    margin-right: 220px;
+    width: calc(100% - 440px);
+  }
+}
+
+@media (min-width: 1536px) {
+  .page-transition-wrapper {
+    margin-left: 250px;
+    margin-right: 250px;
+    width: calc(100% - 500px);
+  }
+}

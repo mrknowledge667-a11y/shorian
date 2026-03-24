@@ -1,0 +1,5 @@
+2025/09/28 21:58:32 [warn] 750#750: *159527 using uninitialized "server" variable while logging request, client: 102.129.252.151, server: wimed.fr
+2025/09/30 01:07:13 [error] 778#778: *166851 open() "/data/letsencrypt-acme-challenge/.well-known/acme-challenge/index.php" failed (2: No such file or directory), client: 172.192.33.179, server: wimed.fr, request: "GET /.well-known/acme-challenge/index.php HTTP/1.1", host: "wimed.fr"
+2025/09/30 01:07:14 [error] 778#778: *166851 open() "/data/letsencrypt-acme-challenge/.well-known/acme-challenge/admin.php" failed (2: No such file or directory), client: 172.192.33.179, server: wimed.fr, request: "GET /.well-known/acme-challenge/admin.php HTTP/1.1", host: "wimed.fr"
+2025/09/30 01:07:18 [error] 778#778: *166851 open() "/data/letsencrypt-acme-challenge/.well-known/acme-challenge/about.php" failed (2: No such file or directory), client: 172.192.33.179, server: wimed.fr, request: "GET /.well-known/acme-challenge/about.php HTTP/1.1", host: "wimed.fr"
+2025/09/30 01:09:30 [warn] 778#778: *167000 using uninitialized "server" variable while logging request, client: 196.251.71.181, server: wimed.fr
