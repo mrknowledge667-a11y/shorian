@@ -50,7 +50,7 @@ const HeroSection = () => {
         justifyContent: 'center',
         backgroundImage: bgUrl 
           ? `url(${bgUrl})`
-          : 'linear-gradient(135deg, #3B9FD9 0%, #2B7EAA 50%, #1a5276 100%)',
+          : 'linear-gradient(135deg, #1565C0 0%, #0D47A1 30%, #1B5E20 70%, #2E7D32 100%)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         '&::before': {
@@ -60,7 +60,7 @@ const HeroSection = () => {
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          background: 'linear-gradient(135deg, rgba(21,101,192,0.6) 0%, rgba(13,71,161,0.5) 50%, rgba(27,94,32,0.6) 100%)',
         },
       }}
     >

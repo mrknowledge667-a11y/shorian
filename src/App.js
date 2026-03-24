@@ -63,20 +63,34 @@ const theme = createTheme({
   direction: document.documentElement.dir === 'rtl' ? 'rtl' : 'ltr',
   palette: {
     primary: {
-      main: '#3B9FD9', // Professional teal - medical field appropriate
-      light: '#6FC5E8',
-      dark: '#2B7EAA',
+      main: '#1565C0', // Deep Medical Blue
+      light: '#42A5F5',
+      dark: '#0D47A1',
+      contrastText: '#FFFFFF',
     },
     secondary: {
-      main: '#2E7D32', // Emerald green - healthcare association
-      light: '#60ad5e',
-      dark: '#005005',
+      main: '#2E7D32', // Healthcare Green
+      light: '#4CAF50',
+      dark: '#1B5E20',
+      contrastText: '#FFFFFF',
+    },
+    info: {
+      main: '#0288D1', // Sky Blue
+      light: '#03A9F4',
+      dark: '#01579B',
+    },
+    success: {
+      main: '#43A047', // Fresh Green
+      light: '#66BB6A',
+      dark: '#2E7D32',
     },
     text: {
-      primary: '#2c3e50',
+      primary: '#1A237E', // Deep Blue-Indigo
+      secondary: '#455A64',
     },
     background: {
-      default: '#FFFFFF',
+      default: '#FAFBFC',
+      paper: '#FFFFFF',
     },
   },
   typography: {

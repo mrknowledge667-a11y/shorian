@@ -183,7 +183,7 @@ const Header = () => {
   return (
     <>
       {/* Top Bar */}
-      <Box sx={{ backgroundColor: '#f5f5f5', py: 1 }}>
+      <Box sx={{ background: 'linear-gradient(135deg, #1565C0 0%, #0D47A1 100%)', py: 1 }}>
         <Container maxWidth="xl">
           <Box
             sx={{
@@ -201,10 +201,10 @@ const Header = () => {
               textAlign: 'center',
               flex: 2,
             }}>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.9)' }}>
                 {t('contact.phone_whatsapp', 'Phone/Whatsapp')}: {siteSettings.phone}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.9)' }}>
                 {t('contact.email_us', 'Email us')}: {siteSettings.contact_email}
               </Typography>
             </Box>
@@ -215,9 +215,9 @@ const Header = () => {
               display: 'flex',
               justifyContent: 'flex-end'
             }}>
-              <IconButton size="small" onClick={handleLanguageClick}>
+              <IconButton size="small" onClick={handleLanguageClick} sx={{ color: 'white' }}>
                 <LanguageIcon fontSize="small" />
-                <Typography variant="body2" sx={{ ml: 0.5 }}>
+                <Typography variant="body2" sx={{ ml: 0.5, color: 'white' }}>
                   {getCurrentLanguageData()?.native_name || 'English'}
                 </Typography>
               </IconButton>
@@ -261,7 +261,7 @@ const Header = () => {
                 sx={{
                   fontWeight: 800,
                   fontSize: { xs: '2rem', md: '2.5rem' },
-                  background: 'linear-gradient(135deg, #2E7D32 0%, #4CAF50 50%, #81C784 100%)',
+                  background: 'linear-gradient(135deg, #1565C0 0%, #42A5F5 40%, #2E7D32 70%, #4CAF50 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
@@ -276,7 +276,7 @@ const Header = () => {
                 sx={{
                   fontWeight: 700,
                   fontSize: { xs: '1.2rem', md: '1.5rem' },
-                  color: '#2E7D32',
+                  color: '#1565C0',
                   letterSpacing: '3px',
                 }}
               >

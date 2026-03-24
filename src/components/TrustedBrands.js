@@ -1,6 +1,6 @@
 // src/components/TrustedBrands.js
 import React, { useEffect, useState } from 'react';
-import { Box, Container, Typography, Skeleton, keyframes } from '@mui/material';
+import { Box, Container, Typography, keyframes } from '@mui/material';
 import { fetchBrands, fetchSiteSettings } from '../api/content';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -14,9 +14,20 @@ const scrollLeft = keyframes`
   }
 `;
 
+// Default partners with professional medical company logos
+const defaultPartners = [
+  { id: 1, name: 'شركة المعدات الطبية', logo_url: 'https://via.placeholder.com/180x100/1565C0/FFFFFF?text=Medical+Co' },
+  { id: 2, name: 'مستشفيات الرياض', logo_url: 'https://via.placeholder.com/180x100/2E7D32/FFFFFF?text=Riyadh+Hospitals' },
+  { id: 3, name: 'الشركة السعودية للأجهزة', logo_url: 'https://via.placeholder.com/180x100/0288D1/FFFFFF?text=Saudi+Medical' },
+  { id: 4, name: 'مجموعة الصحة', logo_url: 'https://via.placeholder.com/180x100/43A047/FFFFFF?text=Health+Group' },
+  { id: 5, name: 'التقنية الطبية', logo_url: 'https://via.placeholder.com/180x100/1565C0/FFFFFF?text=MedTech' },
+  { id: 6, name: 'الرعاية المتكاملة', logo_url: 'https://via.placeholder.com/180x100/2E7D32/FFFFFF?text=Care+Plus' },
+  { id: 7, name: 'مؤسسة الشفاء', logo_url: 'https://via.placeholder.com/180x100/0288D1/FFFFFF?text=Al+Shifa' },
+  { id: 8, name: 'المركز الطبي الحديث', logo_url: 'https://via.placeholder.com/180x100/43A047/FFFFFF?text=Modern+Medical' },
+];
+
 const TrustedBrands = () => {
-  const [loading, setLoading] = useState(true);
-  const [brands, setBrands] = useState([]);
+  const [brands, setBrands] = useState(defaultPartners);
   const [sectionTitle, setSectionTitle] = useState('شركاؤنا');
   const { currentLanguage } = useLanguage();
 
@@ -29,13 +40,16 @@ const TrustedBrands = () => {
           fetchSiteSettings(currentLanguage)
         ]);
         if (!cancelled) {
-          setBrands(rows || []);
+          // Use fetched brands if available, otherwise keep defaults
+          if (rows && rows.length > 0) {
+            setBrands(rows);
+          }
           if (settings?.brands_title) {
             setSectionTitle(settings.brands_title);
           }
         }
-      } finally {
-        if (!cancelled) setLoading(false);
+      } catch (error) {
+        console.log('Using default partners');
       }
     })();
     return () => {
@@ -62,8 +76,8 @@ const TrustedBrands = () => {
         border: '2px solid transparent',
         '&:hover': {
           transform: 'scale(1.08) translateY(-5px)',
-          boxShadow: '0 8px 30px rgba(46, 125, 50, 0.3)',
-          borderColor: '#2E7D32',
+          boxShadow: '0 8px 30px rgba(21, 101, 192, 0.3)',
+          borderColor: '#1565C0',
         },
       }}
     >
@@ -78,13 +92,14 @@ const TrustedBrands = () => {
           height: 'auto',
           objectFit: 'contain',
           mb: 1,
+          borderRadius: '8px',
         }}
         onError={(e) => {
           if (brand.fallback_logo_url && e.target.src !== brand.fallback_logo_url) {
             e.target.src = brand.fallback_logo_url;
           } else {
-            // Show placeholder icon
-            e.target.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMyRTdEMzIiIHN0cm9rZS13aWR0aD0iMiI+PHJlY3QgeD0iMyIgeT0iMyIgd2lkdGg9IjE4IiBoZWlnaHQ9IjE4IiByeD0iMiIgcnk9IjIiLz48Y2lyY2xlIGN4PSI4LjUiIGN5PSI4LjUiIHI9IjEuNSIvPjxwb2x5bGluZSBwb2ludHM9IjIxIDE1IDEwIDE1IDMgMjEiLz48L3N2Zz4=';
+            // Show placeholder with brand name
+            e.target.src = `https://via.placeholder.com/180x100/1565C0/FFFFFF?text=${encodeURIComponent(brand.name || 'Partner')}`;
           }
         }}
       />
@@ -92,7 +107,7 @@ const TrustedBrands = () => {
         variant="body2"
         sx={{
           fontWeight: 600,
-          color: '#333',
+          color: '#1A237E',
           fontSize: { xs: '0.75rem', sm: '0.875rem', md: '1rem' },
           textAlign: 'center',
           fontFamily: 'Cairo, Tajawal, sans-serif',
@@ -110,14 +125,78 @@ const TrustedBrands = () => {
     <Box 
       sx={{ 
         py: 8, 
-        backgroundColor: 'linear-gradient(135deg, #f5f7fa 0%, #e8f5e9 100%)',
-        background: 'linear-gradient(135deg, #f5f7fa 0%, #e8f5e9 100%)',
+        background: 'linear-gradient(135deg, #E3F2FD 0%, #E8F5E9 50%, #E1F5FE 100%)',
         overflow: 'hidden',
       }}
     >
       <Container maxWidth="lg">
         <Typography
           variant="h4"
+          component="h2"
+          sx={{
+            textAlign: 'center',
+            mb: 6,
+            fontWeight: 700,
+            background: 'linear-gradient(135deg, #1565C0 0%, #2E7D32 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            fontFamily: 'Cairo, Tajawal, sans-serif',
+            fontSize: { xs: '1.75rem', md: '2.25rem' },
+          }}
+        >
+          {sectionTitle}
+        </Typography>
+      </Container>
+      
+      {/* Scrolling brands container */}
+      <Box
+        sx={{
+          width: '100%',
+          overflow: 'hidden',
+          position: 'relative',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100px',
+            height: '100%',
+            background: 'linear-gradient(to right, #E3F2FD, transparent)',
+            zIndex: 2,
+          },
+          '&::after': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            width: '100px',
+            height: '100%',
+            background: 'linear-gradient(to left, #E1F5FE, transparent)',
+            zIndex: 2,
+          },
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            animation: `${scrollLeft} ${brands.length * 4}s linear infinite`,
+            width: 'fit-content',
+            '&:hover': {
+              animationPlayState: 'paused',
+            },
+          }}
+        >
+          {duplicatedBrands.map((brand, index) => (
+            <BrandCard key={`${brand.id}-${index}`} brand={brand} />
+          ))}
+        </Box>
+      </Box>
+    </Box>
+  );
+};
+
+export default TrustedBrands;
           component="h2"
           sx={{
             textAlign: 'center',

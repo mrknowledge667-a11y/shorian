@@ -15,10 +15,10 @@ const FixedSidebars = () => {
           height: '100vh',
           zIndex: 9999,
           display: 'block',
-          boxShadow: '4px 0 20px rgba(0,0,0,0.4)',
+          boxShadow: '4px 0 20px rgba(21,101,192,0.3)',
           overflow: 'hidden',
-          border: '3px solid #2E7D32',
-          borderLeft: 'none',
+          borderRight: '3px solid',
+          borderImage: 'linear-gradient(180deg, #1565C0 0%, #2E7D32 100%) 1',
         }}
       >
         <img
@@ -44,10 +44,10 @@ const FixedSidebars = () => {
           height: '100vh',
           zIndex: 9999,
           display: 'block',
-          boxShadow: '-4px 0 20px rgba(0,0,0,0.4)',
+          boxShadow: '-4px 0 20px rgba(21,101,192,0.3)',
           overflow: 'hidden',
-          border: '3px solid #2E7D32',
-          borderRight: 'none',
+          borderLeft: '3px solid',
+          borderImage: 'linear-gradient(180deg, #1565C0 0%, #2E7D32 100%) 1',
         }}
       >
         <img

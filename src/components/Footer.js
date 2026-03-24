@@ -86,7 +86,7 @@ const Footer = () => {
     <Box
       component="footer"
       sx={{
-        backgroundColor: '#1a1a1a',
+        background: 'linear-gradient(135deg, #0D47A1 0%, #1565C0 50%, #1B5E20 100%)',
         color: 'white',
         mt: 'auto',
       }}
