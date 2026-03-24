@@ -80,7 +80,7 @@ const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: '\"Cairo\", \"Tajawal\", \"Roboto\", \"Helvetica\", \"Arial\", sans-serif',
+    fontFamily: '"Cairo", "Tajawal", "Roboto", "Helvetica", "Arial", sans-serif',
     h1: {
       fontWeight: 700,
     },
