@@ -10,7 +10,7 @@ const HeroSection = () => {
   const [settings, setSettings] = useState({
     hero_title: 'معدات طبية عالية الجودة للرعاية الصحية المتميزة',
     hero_subtitle:
-      'شوريان ميد - شريكك الموثوق في توفير أحدث المعدات والأجهزة الطبية',
+      'شريان ميد - شريكك الموثوق في توفير أحدث المعدات والأجهزة الطبية',
     hero_image_url: '/head.jpg',
   });
 

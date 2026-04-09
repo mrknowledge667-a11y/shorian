@@ -279,7 +279,20 @@ const Header = () => {
           <Box sx={{ py: 3, position: 'relative', zIndex: 1 }}>
             {/* Logo - Centered */}
             <Box 
-              sx={{ textAlign: 'center', mb: 4, cursor: 'pointer' }}
+              sx={{
+                textAlign: 'center',
+                mb: 4.75,
+                cursor: 'pointer',
+                maxWidth: 760,
+                mx: 'auto',
+                px: { xs: 2, md: 3 },
+                py: { xs: 1.5, md: 2 },
+                transform: 'translateY(-6px)',
+                borderRadius: 3,
+                border: '1px solid rgba(255,255,255,0.28)',
+                background: 'linear-gradient(180deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.08) 100%)',
+                backdropFilter: 'blur(3px)',
+              }}
               onClick={() => navigate('/')}
             >
               <Typography
@@ -288,11 +301,13 @@ const Header = () => {
                   fontWeight: 800,
                   fontSize: { xs: '2rem', md: '2.5rem' },
                   color: '#FFFFFF',
-                  letterSpacing: '2px',
+                  letterSpacing: 0,
+                  lineHeight: 1.25,
+                  wordBreak: 'keep-all',
                   textShadow: '0 6px 14px rgba(0,0,0,0.24)',
                 }}
               >
-                شوريان ميد
+                شريان
               </Typography>
               <Typography
                 variant="h5"
@@ -300,7 +315,7 @@ const Header = () => {
                   fontWeight: 700,
                   fontSize: { xs: '1.2rem', md: '1.5rem' },
                   color: '#E8FFF1',
-                  letterSpacing: '3px',
+                  letterSpacing: { xs: '1px', md: '2px' },
                 }}
               >
                 SHORYAN MEDICAL
@@ -309,6 +324,7 @@ const Header = () => {
                 variant="subtitle1"
                 sx={{
                   mt: 1,
+                  mb: 0.5,
                   color: 'rgba(255,255,255,0.9)',
                   fontSize: { xs: '1.05rem', md: '1.25rem' },
                   fontWeight: 700,
@@ -321,8 +337,9 @@ const Header = () => {
 
             <Box
               sx={{
+                mt: 0.5,
                 mb: 2.5,
-                height: 34,
+                height: { xs: 38, md: 40 },
                 borderRadius: '999px',
                 border: '1px solid rgba(255,255,255,0.35)',
                 background: 'rgba(255,255,255,0.12)',
@@ -339,10 +356,10 @@ const Header = () => {
                   whiteSpace: 'nowrap',
                   color: '#FFFFFF',
                   fontWeight: 800,
-                  letterSpacing: '2px',
-                  fontSize: { xs: '0.9rem', md: '1rem' },
+                  letterSpacing: { xs: '1px', md: '1.5px' },
+                  fontSize: { xs: '0.85rem', md: '0.95rem' },
                   textTransform: 'uppercase',
-                  animation: 'shorianMove 11s linear infinite',
+                  animation: 'shorianMove 13s linear infinite',
                   textShadow: '0 4px 12px rgba(0,0,0,0.22)',
                 }}
               >
