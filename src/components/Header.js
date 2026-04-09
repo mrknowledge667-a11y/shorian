@@ -245,12 +245,38 @@ const Header = () => {
       <AppBar
         position="sticky"
         sx={{
-          backgroundColor: 'white',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          background: 'linear-gradient(120deg, #0b6b3b 0%, #108a4d 50%, #1f9d5f 100%)',
+          backgroundSize: '220% 220%',
+          animation: 'headerFlow 12s ease-in-out infinite',
+          boxShadow: '0 10px 24px rgba(11,107,59,0.32)',
+          overflow: 'hidden',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            inset: '-40% -10% auto -10%',
+            height: '220px',
+            background: 'radial-gradient(circle at 30% 35%, rgba(255,255,255,0.18), transparent 55%)',
+            animation: 'headerGlow 9s ease-in-out infinite',
+            pointerEvents: 'none',
+          },
+          '@keyframes headerFlow': {
+            '0%': { backgroundPosition: '0% 50%' },
+            '50%': { backgroundPosition: '100% 50%' },
+            '100%': { backgroundPosition: '0% 50%' },
+          },
+          '@keyframes headerGlow': {
+            '0%': { transform: 'translateX(-6%) scale(1)', opacity: 0.65 },
+            '50%': { transform: 'translateX(4%) scale(1.06)', opacity: 1 },
+            '100%': { transform: 'translateX(-6%) scale(1)', opacity: 0.65 },
+          },
+          '@keyframes shorianMove': {
+            '0%': { transform: 'translateX(100%)' },
+            '100%': { transform: 'translateX(-100%)' },
+          },
         }}
       >
         <Container maxWidth="xl">
-          <Box sx={{ py: 3 }}>
+          <Box sx={{ py: 3, position: 'relative', zIndex: 1 }}>
             {/* Logo - Centered */}
             <Box 
               sx={{ textAlign: 'center', mb: 4, cursor: 'pointer' }}
@@ -261,12 +287,9 @@ const Header = () => {
                 sx={{
                   fontWeight: 800,
                   fontSize: { xs: '2rem', md: '2.5rem' },
-                  background: 'linear-gradient(135deg, #1565C0 0%, #42A5F5 40%, #2E7D32 70%, #4CAF50 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
+                  color: '#FFFFFF',
                   letterSpacing: '2px',
-                  textShadow: '2px 2px 4px rgba(0,0,0,0.1)',
+                  textShadow: '0 6px 14px rgba(0,0,0,0.24)',
                 }}
               >
                 شوريان ميد
@@ -276,23 +299,54 @@ const Header = () => {
                 sx={{
                   fontWeight: 700,
                   fontSize: { xs: '1.2rem', md: '1.5rem' },
-                  color: '#1565C0',
+                  color: '#E8FFF1',
                   letterSpacing: '3px',
                 }}
               >
-                SHORIAN MED
+                SHORYAN MEDICAL
               </Typography>
               <Typography
                 variant="subtitle1"
                 sx={{
                   mt: 1,
-                  color: '#666',
-                  fontSize: '0.9rem',
-                  fontWeight: 500,
-                  letterSpacing: '0.3px'
+                  color: 'rgba(255,255,255,0.9)',
+                  fontSize: { xs: '1.05rem', md: '1.25rem' },
+                  fontWeight: 700,
+                  letterSpacing: '0.5px'
                 }}
               >
                 شريكك الموثوق في المعدات الطبية
+              </Typography>
+            </Box>
+
+            <Box
+              sx={{
+                mb: 2.5,
+                height: 34,
+                borderRadius: '999px',
+                border: '1px solid rgba(255,255,255,0.35)',
+                background: 'rgba(255,255,255,0.12)',
+                position: 'relative',
+                overflow: 'hidden',
+                backdropFilter: 'blur(3px)',
+              }}
+            >
+              <Typography
+                sx={{
+                  position: 'absolute',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  whiteSpace: 'nowrap',
+                  color: '#FFFFFF',
+                  fontWeight: 800,
+                  letterSpacing: '2px',
+                  fontSize: { xs: '0.9rem', md: '1rem' },
+                  textTransform: 'uppercase',
+                  animation: 'shorianMove 11s linear infinite',
+                  textShadow: '0 4px 12px rgba(0,0,0,0.22)',
+                }}
+              >
+                SHORYAN MEDICAL • SHORYAN MEDICAL • SHORYAN MEDICAL • SHORYAN MEDICAL • SHORYAN MEDICAL
               </Typography>
             </Box>
 
@@ -313,12 +367,12 @@ const Header = () => {
                         key={item.id}
                         onClick={() => handleNavClick(item.route)}
                         sx={{
-                          color: '#2c2976',
+                          color: '#ffffff',
                           cursor: item.route && item.route !== '#' ? 'pointer' : 'default',
                           fontSize: '0.9rem',
                           fontWeight: 700,
                           '&:hover': {
-                            color: '#2c2976',
+                            color: '#ffffff',
                             textDecoration: item.route && item.route !== '#' ? 'underline' : 'none',
                             textDecorationThickness: '2px',
                             textUnderlineOffset: '3px',
@@ -338,12 +392,12 @@ const Header = () => {
                         key={item.id}
                         onClick={() => handleNavClick(item.route)}
                         sx={{
-                          color: '#2c2976',
+                          color: '#ffffff',
                           cursor: item.route && item.route !== '#' ? 'pointer' : 'default',
                           fontSize: '0.9rem',
                           fontWeight: 700,
                           '&:hover': {
-                            color: '#2c2976',
+                            color: '#ffffff',
                             textDecoration: item.route && item.route !== '#' ? 'underline' : 'none',
                             textDecorationThickness: '2px',
                             textUnderlineOffset: '3px',
@@ -366,17 +420,17 @@ const Header = () => {
                           width: '200px',
                           '& .MuiOutlinedInput-root': {
                             height: '32px',
-                            backgroundColor: 'white',
+                            backgroundColor: 'rgba(255,255,255,0.97)',
                             '& fieldset': {
-                              borderColor: '#2c2976',
+                              borderColor: 'rgba(255,255,255,0.95)',
                               borderWidth: '1px',
                             },
                             '&:hover fieldset': {
-                              borderColor: '#2c2976',
+                              borderColor: '#ffffff',
                               borderWidth: '2px',
                             },
                             '&.Mui-focused fieldset': {
-                              borderColor: '#2c2976',
+                              borderColor: '#ffffff',
                               borderWidth: '2px',
                             },
                           },
@@ -390,9 +444,9 @@ const Header = () => {
                                 size="small"
                                 sx={{
                                   p: 0.5,
-                                  color: '#2c2976',
+                                  color: '#0b6b3b',
                                   '&:hover': {
-                                    backgroundColor: 'rgba(44, 41, 118, 0.04)',
+                                    backgroundColor: 'rgba(11, 107, 59, 0.08)',
                                   },
                                 }}
                               >
@@ -427,17 +481,17 @@ const Header = () => {
                       width: '250px',
                       '& .MuiOutlinedInput-root': {
                         height: '36px',
-                        backgroundColor: 'white',
+                        backgroundColor: 'rgba(255,255,255,0.97)',
                         '& fieldset': {
-                          borderColor: '#2c2976',
+                          borderColor: 'rgba(255,255,255,0.95)',
                           borderWidth: '1px',
                         },
                         '&:hover fieldset': {
-                          borderColor: '#2c2976',
+                          borderColor: '#ffffff',
                           borderWidth: '2px',
                         },
                         '&.Mui-focused fieldset': {
-                          borderColor: '#2c2976',
+                          borderColor: '#ffffff',
                           borderWidth: '2px',
                         },
                       },
@@ -451,9 +505,9 @@ const Header = () => {
                             size="small"
                             sx={{
                               p: 0.5,
-                              color: '#2c2976',
+                              color: '#0b6b3b',
                               '&:hover': {
-                                backgroundColor: 'rgba(44, 41, 118, 0.04)',
+                                backgroundColor: 'rgba(11, 107, 59, 0.08)',
                               },
                             }}
                           >
@@ -467,7 +521,7 @@ const Header = () => {
                   {/* Menu Icon */}
                   <Box sx={{ display: 'flex', gap: 1 }}>
                     <IconButton
-                      sx={{ color: '#2c2976' }}
+                      sx={{ color: '#ffffff' }}
                       onClick={() => setMobileMenuOpen(true)}
                     >
                       <MenuIcon />

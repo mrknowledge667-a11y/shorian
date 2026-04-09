@@ -25,7 +25,6 @@ const Footer = () => {
   const { currentLanguage } = useLanguage();
   const { t } = useTranslation();
   const [footerSettings, setFooterSettings] = useState({
-    office_address_lines: ['1 Nestle\'s Avenue', 'Hayes, UB3 4UZ', 'UK'],
     about_text: 'Over 25 years of experience in medical equipment sales and services, with more than 2,000 products. We offer products, services and solutions to public and private hospitals, medical centres and private practices.',
     facebook_url: '#',
     instagram_url: '#',
@@ -53,7 +52,6 @@ const Footer = () => {
         if (!cancelled) {
           if (settingsData) {
             setFooterSettings({
-              office_address_lines: settingsData.office_address_lines || footerSettings.office_address_lines,
               about_text: settingsData.about_text || footerSettings.about_text,
               facebook_url: settingsData.facebook_url || footerSettings.facebook_url,
               instagram_url: settingsData.instagram_url || footerSettings.instagram_url,
@@ -86,38 +84,15 @@ const Footer = () => {
     <Box
       component="footer"
       sx={{
-        background: 'linear-gradient(135deg, #0D47A1 0%, #1565C0 50%, #1B5E20 100%)',
+        background: 'linear-gradient(135deg, #0b6b3b 0%, #108a4d 50%, #1f9d5f 100%)',
         color: 'white',
         mt: 'auto',
       }}
     >
       <Container maxWidth="lg" sx={{ py: 6 }}>
         <Grid container spacing={4}>
-          {/* Head Office */}
-          <Grid item xs={12} md={4}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-              {t('footer.head_office', 'Head Office')}
-            </Typography>
-            {loading ? (
-              <>
-                <Skeleton variant="text" width={150} />
-                <Skeleton variant="text" width={120} />
-                <Skeleton variant="text" width={50} />
-              </>
-            ) : (
-              <Typography variant="body2" sx={{ lineHeight: 1.8 }}>
-                {footerSettings.office_address_lines.map((line, index) => (
-                  <React.Fragment key={index}>
-                    {line}
-                    {index < footerSettings.office_address_lines.length - 1 && <br />}
-                  </React.Fragment>
-                ))}
-              </Typography>
-            )}
-          </Grid>
-
           {/* About Us */}
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} md={6}>
             <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
               {t('footer.about_us', 'About Us')}
             </Typography>
@@ -135,7 +110,7 @@ const Footer = () => {
           </Grid>
 
           {/* Social Media */}
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} md={6}>
             <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
               {t('footer.follow_us', 'Follow Us')}
             </Typography>
@@ -224,7 +199,7 @@ const Footer = () => {
       <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.2)' }} />
 
       {/* Bottom Bar */}
-      <Box sx={{ py: 3, backgroundColor: '#0f0f0f' }}>
+      <Box sx={{ py: 3, backgroundColor: '#0a4f2d' }}>
         <Container maxWidth="lg">
           <Box
             sx={{

@@ -83,43 +83,60 @@ code {
   width: 100%;
   min-height: 100vh;
   animation: fadeIn 0.5s ease-out;
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  background:
+    radial-gradient(1000px 520px at 10% -10%, rgba(21, 101, 192, 0.22), transparent 65%),
+    radial-gradient(840px 460px at 92% 0%, rgba(46, 125, 50, 0.2), transparent 70%),
+    linear-gradient(180deg, #f7fbff 0%, #f4faf7 48%, #ffffff 100%);
 }
 
-/* Fixed sidebars spacing - all screen sizes */
-.page-transition-wrapper {
-  margin-left: 80px;
-  margin-right: 80px;
-  width: calc(100% - 160px);
+.page-transition-wrapper::before,
+.page-transition-wrapper::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  z-index: -1;
+  border-radius: 999px;
+  filter: blur(38px);
+  opacity: 0.55;
+  animation: drift 16s ease-in-out infinite;
 }
 
-@media (min-width: 600px) {
-  .page-transition-wrapper {
-    margin-left: 120px;
-    margin-right: 120px;
-    width: calc(100% - 240px);
+.page-transition-wrapper::before {
+  width: min(40vw, 460px);
+  height: min(40vw, 460px);
+  top: -120px;
+  right: -100px;
+  background: conic-gradient(from 120deg, rgba(21, 101, 192, 0.35), rgba(66, 165, 245, 0.24), rgba(21, 101, 192, 0.32));
+}
+
+.page-transition-wrapper::after {
+  width: min(36vw, 420px);
+  height: min(36vw, 420px);
+  left: -120px;
+  bottom: -140px;
+  background: conic-gradient(from 200deg, rgba(27, 94, 32, 0.34), rgba(67, 160, 71, 0.22), rgba(13, 71, 161, 0.2));
+  animation-delay: -8s;
+}
+
+@keyframes drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(10px, -16px, 0) scale(1.06);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
   }
 }
 
-@media (min-width: 900px) {
-  .page-transition-wrapper {
-    margin-left: 180px;
-    margin-right: 180px;
-    width: calc(100% - 360px);
-  }
-}
-
-@media (min-width: 1200px) {
-  .page-transition-wrapper {
-    margin-left: 220px;
-    margin-right: 220px;
-    width: calc(100% - 440px);
-  }
-}
-
-@media (min-width: 1536px) {
-  .page-transition-wrapper {
-    margin-left: 250px;
-    margin-right: 250px;
-    width: calc(100% - 500px);
+@media (max-width: 900px) {
+  .page-transition-wrapper::before,
+  .page-transition-wrapper::after {
+    opacity: 0.4;
+    filter: blur(30px);
   }
 }

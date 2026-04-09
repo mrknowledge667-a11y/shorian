@@ -40,7 +40,6 @@ const TrustedBrands = () => {
           fetchSiteSettings(currentLanguage)
         ]);
         if (!cancelled) {
-          // Use fetched brands if available, otherwise keep defaults
           if (rows && rows.length > 0) {
             setBrands(rows);
           }
@@ -98,7 +97,6 @@ const TrustedBrands = () => {
           if (brand.fallback_logo_url && e.target.src !== brand.fallback_logo_url) {
             e.target.src = brand.fallback_logo_url;
           } else {
-            // Show placeholder with brand name
             e.target.src = `https://via.placeholder.com/180x100/1565C0/FFFFFF?text=${encodeURIComponent(brand.name || 'Partner')}`;
           }
         }}
@@ -118,7 +116,6 @@ const TrustedBrands = () => {
     </Box>
   );
 
-  // Double the brands array for seamless infinite scroll
   const duplicatedBrands = [...brands, ...brands];
 
   return (
@@ -143,13 +140,29 @@ const TrustedBrands = () => {
             backgroundClip: 'text',
             fontFamily: 'Cairo, Tajawal, sans-serif',
             fontSize: { xs: '1.75rem', md: '2.25rem' },
+            position: 'sticky',
+            top: { xs: 72, md: 92 },
+            zIndex: 3,
+            py: 1,
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              inset: '-6px -18px',
+              borderRadius: '999px',
+              backgroundImage: "url('/wimed_icon.svg')",
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center',
+              backgroundSize: '28px 28px',
+              backgroundAttachment: 'fixed',
+              opacity: 0.1,
+              zIndex: -1,
+            },
           }}
         >
           {sectionTitle}
         </Typography>
       </Container>
       
-      {/* Scrolling brands container */}
       <Box
         sx={{
           width: '100%',
@@ -190,88 +203,6 @@ const TrustedBrands = () => {
           {duplicatedBrands.map((brand, index) => (
             <BrandCard key={`${brand.id}-${index}`} brand={brand} />
           ))}
-        </Box>
-      </Box>
-    </Box>
-  );
-};
-
-export default TrustedBrands;
-          component="h2"
-          sx={{
-            textAlign: 'center',
-            mb: 6,
-            fontWeight: 700,
-            color: '#2E7D32',
-            fontFamily: 'Cairo, Tajawal, sans-serif',
-            fontSize: { xs: '1.75rem', md: '2.25rem' },
-          }}
-        >
-          {sectionTitle}
-        </Typography>
-      </Container>
-      
-      {/* Scrolling brands container */}
-      <Box
-        sx={{
-          width: '100%',
-          overflow: 'hidden',
-          position: 'relative',
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100px',
-            height: '100%',
-            background: 'linear-gradient(to right, #f5f7fa, transparent)',
-            zIndex: 2,
-          },
-          '&::after': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            width: '100px',
-            height: '100%',
-            background: 'linear-gradient(to left, #e8f5e9, transparent)',
-            zIndex: 2,
-          },
-        }}
-      >
-        <Box
-          sx={{
-            display: 'flex',
-            animation: brands.length > 0 ? `${scrollLeft} ${brands.length * 4}s linear infinite` : 'none',
-            width: 'fit-content',
-            '&:hover': {
-              animationPlayState: 'paused',
-            },
-          }}
-        >
-          {loading
-            ? Array.from({ length: 10 }).map((_, i) => (
-                <Box
-                  key={`s-${i}`}
-                  sx={{
-                    minWidth: { xs: '150px', md: '220px' },
-                    height: { xs: '120px', md: '160px' },
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: 'white',
-                    borderRadius: '16px',
-                    padding: 2,
-                    mx: 2,
-                    boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
-                  }}
-                >
-                  <Skeleton variant="rectangular" width="100%" height="100%" sx={{ borderRadius: '12px' }} />
-                </Box>
-              ))
-            : duplicatedBrands.map((brand, index) => (
-                <BrandCard key={`${brand.id}-${index}`} brand={brand} />
-              ))}
         </Box>
       </Box>
     </Box>

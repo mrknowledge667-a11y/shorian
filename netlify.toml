@@ -5,3 +5,4 @@
 
 [build]
   publish = "build"
+  #root > div.page-transition-wrapper > div > div > div.MuiGrid-root.MuiGrid-container.MuiGrid-direction-xs-row.MuiGrid-spacing-xs-3.MuiGrid-spacing-md-4.css-13x7hyy-MuiGrid-root > div.MuiGrid-root.MuiGrid-direction-xs-row.css-mrnl3b-MuiGrid-root > div > div > img

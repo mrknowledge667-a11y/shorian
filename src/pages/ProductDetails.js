@@ -17,8 +17,6 @@ import {
   Snackbar,
   Dialog,
   DialogContent,
-  useTheme,
-  useMediaQuery,
   InputAdornment,
 } from '@mui/material';
 import {
@@ -38,6 +36,7 @@ import Footer from '../components/Footer';
 import { supabase } from '../api/supabaseClient';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTranslation } from '../hooks/useTranslation';
+import { sanitizeProductRecord } from '../utils/contentSanitizer';
 
 const PRIMARY = '#3B9FD9';
 const PRIMARY_DARK = '#2B7EAA';
@@ -48,8 +47,6 @@ const MUTED = '#8a8a8a';
 const ProductDetails = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { currentLanguage } = useLanguage();
   const { t } = useTranslation();
 
@@ -126,7 +123,7 @@ const ProductDetails = () => {
           ? imagesData
           : [{ id: 0, image_url: productData.image_url, alt_text: productData.name, is_primary: true }];
 
-      setProduct(productData);
+      setProduct(sanitizeProductRecord(productData));
       setProductImages(images);
     } catch (error) {
       // Non-blocking: keep page stable with empty state handling
@@ -292,7 +289,7 @@ const ProductDetails = () => {
                   sx={{
                     position: 'relative',
                     width: '100%',
-                    aspectRatio: { xs: '4 / 3', sm: '16 / 10', md: '1 / 1' },
+                    height: { xs: 320, sm: 420, md: 520 },
                     minHeight: 260,
                     background:
                       'linear-gradient(135deg, rgba(245,247,250,0.8) 0%, rgba(216,225,238,0.6) 100%)',
@@ -315,7 +312,9 @@ const ProductDetails = () => {
                         width: '100%',
                         height: '100%',
                         objectFit: 'contain',
+                        objectPosition: 'center',
                         padding: 16,
+                        display: 'block',
                       }}
                     />
                   ) : (
@@ -456,7 +455,10 @@ const ProductDetails = () => {
                           style={{
                             width: '100%',
                             height: '100%',
-                            objectFit: 'cover',
+                            objectFit: 'contain',
+                            objectPosition: 'center',
+                            display: 'block',
+                            backgroundColor: '#ffffff',
                           }}
                         />
                       </Box>
@@ -541,20 +543,6 @@ const ProductDetails = () => {
                     </Typography>
                   )}
 
-                  {product.description && (
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        color: TEXT,
-                        opacity: 0.9,
-                        mb: 2.5,
-                        lineHeight: 1.6,
-                        fontSize: 'clamp(.95rem, .8rem + .4vw, 1.125rem)',
-                      }}
-                    >
-                      {product.description}
-                    </Typography>
-                  )}
                 </Box>
 
                 {/* Detailed Description */}

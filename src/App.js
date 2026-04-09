@@ -15,7 +15,6 @@ import CollapsibleContent from './components/CollapsibleContent';
 import Footer from './components/Footer';
 import PageTransition from './components/PageTransition';
 import FloatingActions from './components/FloatingActions';
-import FixedSidebars from './components/FixedSidebars';
 
 // Import category pages
 import Anaesthesia from './pages/Anaesthesia';
@@ -128,7 +127,6 @@ const AppContent = () => {
   return (
     <>
       <ScrollToTop />
-      {!isAdminRoute && <FixedSidebars />}
       {!isAdminRoute && <FloatingActions />}
       {!isAdminRoute && !isProductDetailsRoute && <Header />}
       <PageTransition>

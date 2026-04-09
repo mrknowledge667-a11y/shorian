@@ -1,5 +1,6 @@
 // src/api/content.js
 import { supabase } from './supabaseClient';
+import { sanitizeProductRecord } from '../utils/contentSanitizer';
 
 // Cache for default language
 let defaultLanguageCache = null;
@@ -185,7 +186,7 @@ export async function fetchProductsByCategoryId(categoryId, language = null) {
       .order('id', { ascending: true })
   );
   
-  if (!products || lang === 'en') return products;
+  if (!products || lang === 'en') return products?.map(sanitizeProductRecord);
   
   // Fetch translations
   const productIds = products.map(prod => prod.id);
@@ -197,7 +198,7 @@ export async function fetchProductsByCategoryId(categoryId, language = null) {
       .eq('language_code', lang)
   );
   
-  if (!translations) return products;
+  if (!translations) return products.map(sanitizeProductRecord);
   
   // Map translations to products
   const translationMap = translations.reduce((acc, trans) => {
@@ -205,7 +206,7 @@ export async function fetchProductsByCategoryId(categoryId, language = null) {
     return acc;
   }, {});
   
-  return products.map(product => ({
+  return products.map(product => sanitizeProductRecord({
     ...product,
     name: translationMap[product.id]?.name || product.name,
     description: translationMap[product.id]?.description || product.description,
@@ -230,7 +231,7 @@ export async function fetchNewProducts(language = null) {
       .order('id', { ascending: true })
   );
   
-  if (!products || lang === 'en') return products;
+  if (!products || lang === 'en') return products?.map(sanitizeProductRecord);
   
   // Fetch translations
   const productIds = products.map(prod => prod.id);
@@ -242,7 +243,7 @@ export async function fetchNewProducts(language = null) {
       .eq('language_code', lang)
   );
   
-  if (!translations) return products;
+  if (!translations) return products.map(sanitizeProductRecord);
   
   // Map translations to products
   const translationMap = translations.reduce((acc, trans) => {
@@ -250,7 +251,7 @@ export async function fetchNewProducts(language = null) {
     return acc;
   }, {});
   
-  return products.map(product => ({
+  return products.map(product => sanitizeProductRecord({
     ...product,
     name: translationMap[product.id]?.name || product.name,
     description: translationMap[product.id]?.description || product.description,
@@ -275,7 +276,7 @@ export async function fetchProductById(productId, language = null) {
       .single()
   );
   
-  if (!product || lang === 'en') return product;
+  if (!product || lang === 'en') return sanitizeProductRecord(product);
   
   // Fetch translation
   const translation = await handle(
@@ -288,17 +289,17 @@ export async function fetchProductById(productId, language = null) {
   );
   
   if (translation) {
-    return {
+    return sanitizeProductRecord({
       ...product,
       name: translation.name || product.name,
       description: translation.description || product.description,
       detailed_description: translation.detailed_description || product.detailed_description,
       specifications: translation.specifications || product.specifications,
       features: translation.features || product.features,
-    };
+    });
   }
   
-  return product;
+  return sanitizeProductRecord(product);
 }
 
 // Services
@@ -648,7 +649,7 @@ export async function searchProducts(searchQuery, language = null) {
         product.name.toLowerCase().includes(searchLower) ||
         (product.description && product.description.toLowerCase().includes(searchLower))
       );
-    });
+    }).map(sanitizeProductRecord);
   }
   
   // For other languages, fetch translations and search in them
@@ -669,7 +670,7 @@ export async function searchProducts(searchQuery, language = null) {
         product.name.toLowerCase().includes(searchLower) ||
         (product.description && product.description.toLowerCase().includes(searchLower))
       );
-    });
+    }).map(sanitizeProductRecord);
   }
   
   // Create translation map
@@ -697,11 +698,11 @@ export async function searchProducts(searchQuery, language = null) {
   }).map(product => {
     // Apply translations to the returned products
     const translation = translationMap[product.id];
-    return {
+    return sanitizeProductRecord({
       ...product,
       name: translation?.name || product.name,
       description: translation?.description || product.description,
-    };
+    });
   });
 }
 
