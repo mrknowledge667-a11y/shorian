@@ -179,34 +179,22 @@ function Products() {
       } else {
         // Save translations
         if (editingProduct) {
-          const { data: existing } = await supabase
+          const { error } = await supabase
             .from('products_translations')
-            .select('id')
-            .eq('product_id', editingProduct.id)
-            .eq('language_code', adminLanguage)
-            .single();
-
-          if (existing) {
-            await supabase
-              .from('products_translations')
-              .update({
-                name: formData.name,
-                brand: formData.brand,
-                price_display: formData.price_display
-              })
-              .eq('product_id', editingProduct.id)
-              .eq('language_code', adminLanguage);
-          } else {
-            await supabase
-              .from('products_translations')
-              .insert({
+            .upsert(
+              {
                 product_id: editingProduct.id,
                 language_code: adminLanguage,
                 name: formData.name,
                 brand: formData.brand,
                 price_display: formData.price_display,
-              });
-          }
+              },
+              {
+                onConflict: 'product_id,language_code',
+              }
+            );
+
+          if (error) throw error;
         } else {
           // For new items, create in English first
           showSnackbar('Please create new products in English first, then add translations', 'info');
@@ -256,7 +244,16 @@ function Products() {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: { xs: 'flex-start', sm: 'center' },
+          flexDirection: { xs: 'column', sm: 'row' },
+          gap: { xs: 1.5, sm: 0 },
+          mb: 3,
+        }}
+      >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <Typography variant="h4" component="h1">
             Products Management
@@ -279,8 +276,8 @@ function Products() {
         </Button>
       </Box>
 
-      <TableContainer component={Paper}>
-        <Table>
+      <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
+        <Table sx={{ minWidth: 980 }}>
           <TableHead>
             <TableRow>
               <TableCell width={50}></TableCell>
@@ -291,7 +288,19 @@ function Products() {
               <TableCell>Condition</TableCell>
               <TableCell>Price</TableCell>
               <TableCell>Status</TableCell>
-              <TableCell align="right">Actions</TableCell>
+              <TableCell
+                align="right"
+                sx={{
+                  position: 'sticky',
+                  right: 0,
+                  backgroundColor: 'background.paper',
+                  zIndex: 2,
+                  boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)',
+                  minWidth: 110,
+                }}
+              >
+                Actions
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -322,7 +331,17 @@ function Products() {
                   <TableCell>
                     <Skeleton variant="text" width={50} />
                   </TableCell>
-                  <TableCell align="right">
+                  <TableCell
+                    align="right"
+                    sx={{
+                      position: 'sticky',
+                      right: 0,
+                      backgroundColor: 'background.paper',
+                      zIndex: 1,
+                      boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)',
+                      minWidth: 110,
+                    }}
+                  >
                     <Skeleton variant="text" width={100} />
                   </TableCell>
                 </TableRow>
@@ -363,7 +382,17 @@ function Products() {
                       <Chip label="NEW" color="secondary" size="small" />
                     )}
                   </TableCell>
-                  <TableCell align="right">
+                  <TableCell
+                    align="right"
+                    sx={{
+                      position: 'sticky',
+                      right: 0,
+                      backgroundColor: 'background.paper',
+                      zIndex: 1,
+                      boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)',
+                      minWidth: 110,
+                    }}
+                  >
                     <IconButton onClick={() => handleOpenDialog(product)} color="primary">
                       <EditIcon />
                     </IconButton>
@@ -379,9 +408,23 @@ function Products() {
       </TableContainer>
 
       {/* Add/Edit Dialog */}
-      <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
+      <Dialog
+        open={dialogOpen}
+        onClose={handleCloseDialog}
+        fullWidth
+        maxWidth={false}
+        scroll="paper"
+        PaperProps={{
+          sx: {
+            width: { xs: '96vw', sm: '88vw', md: '72vw', lg: '960px' },
+            maxWidth: { xs: '96vw', sm: '88vw', md: '72vw', lg: '960px' },
+            maxHeight: '90vh',
+            m: { xs: 1, md: 2 },
+          },
+        }}
+      >
         <DialogTitle>{editingProduct ? 'Edit Product' : 'Add New Product'}</DialogTitle>
-        <DialogContent>
+        <DialogContent dividers>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 2 }}>
             <TextField
               label="Product Name"

@@ -1,5 +1,5 @@
 // src/admin/Dashboard.js
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -14,6 +14,8 @@ import {
   CssBaseline,
   Divider,
   Button,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import {
   Dashboard as DashboardIcon,
@@ -64,6 +66,9 @@ const navItems = [
 ];
 
 function Dashboard() {
+  const theme = useTheme();
+  const isDesktop = useMediaQuery(theme.breakpoints.up('lg'));
+  const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -72,7 +77,12 @@ function Dashboard() {
     [location.pathname]
   );
 
-  const handleNav = (path) => navigate(path);
+  const handleNav = (path) => {
+    navigate(path);
+    if (!isDesktop) {
+      setMobileOpen(false);
+    }
+  };
 
   const handleLogout = async () => {
     await signOut();
@@ -81,7 +91,7 @@ function Dashboard() {
 
   return (
     <AdminLanguageProvider>
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: 'flex', minHeight: '100vh', width: '100%' }}>
       <CssBaseline />
       <AppBar
         position="fixed"
@@ -93,6 +103,16 @@ function Dashboard() {
         }}
       >
         <Toolbar>
+          {!isDesktop && (
+            <IconButton
+              color="primary"
+              edge="start"
+              onClick={() => setMobileOpen(true)}
+              sx={{ mr: 1 }}
+            >
+              <MenuIcon />
+            </IconButton>
+          )}
           <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 700, color: 'primary.main' }}>
             WiMed Admin
           </Typography>
@@ -108,9 +128,12 @@ function Dashboard() {
       </AppBar>
 
       <Drawer
-        variant="permanent"
+        variant={isDesktop ? 'permanent' : 'temporary'}
+        open={isDesktop ? true : mobileOpen}
+        onClose={() => setMobileOpen(false)}
+        ModalProps={{ keepMounted: true }}
         sx={{
-          width: drawerWidth,
+          width: isDesktop ? drawerWidth : 0,
           flexShrink: 0,
           '& .MuiDrawer-paper': {
             width: drawerWidth,
@@ -134,7 +157,14 @@ function Dashboard() {
           </List>
           <Divider />
           <List>
-            <ListItemButton onClick={() => navigate('/')}>
+            <ListItemButton
+              onClick={() => {
+                navigate('/');
+                if (!isDesktop) {
+                  setMobileOpen(false);
+                }
+              }}
+            >
               <ListItemIcon>
                 <HomeIcon />
               </ListItemIcon>
@@ -144,9 +174,31 @@ function Dashboard() {
         </Box>
       </Drawer>
 
-        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            minWidth: 0,
+            maxWidth: 'none',
+            width: '100%',
+            p: { xs: 1, sm: 1.5, md: 2.5 },
+          }}
+        >
           <Toolbar />
-          <Outlet />
+          <Box
+            sx={{
+              width: '100%',
+              maxWidth: 'none',
+              mx: 0,
+              border: '3px solid #108a4d',
+              borderRadius: 3,
+              backgroundColor: '#ffffff',
+              boxShadow: '0 0 0 1px rgba(16,138,77,0.16), 0 8px 22px rgba(16,138,77,0.08)',
+              p: { xs: 0.9, sm: 1.25, md: 2 },
+            }}
+          >
+            <Outlet />
+          </Box>
         </Box>
       </Box>
     </AdminLanguageProvider>

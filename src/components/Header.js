@@ -183,7 +183,7 @@ const Header = () => {
   return (
     <>
       {/* Top Bar */}
-      <Box sx={{ background: 'linear-gradient(135deg, #1565C0 0%, #0D47A1 100%)', py: 1 }}>
+      <Box sx={{ background: 'linear-gradient(135deg, #1565C0 0%, #0D47A1 100%)', py: 0.2 }}>
         <Container maxWidth="xl">
           <Box
             sx={{
@@ -201,11 +201,8 @@ const Header = () => {
               textAlign: 'center',
               flex: 2,
             }}>
-              <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.9)' }}>
-                {t('contact.phone_whatsapp', 'Phone/Whatsapp')}: {siteSettings.phone}
-              </Typography>
-              <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.9)' }}>
-                {t('contact.email_us', 'Email us')}: {siteSettings.contact_email}
+              <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.95)', fontSize: { xs: '0.74rem', md: '0.84rem' }, fontWeight: 800, lineHeight: 1.15 }}>
+                {t('contact.phone_whatsapp', 'Phone/Whatsapp')}: {siteSettings.phone} | {t('contact.email_us', 'Email us')}: {siteSettings.contact_email}
               </Typography>
             </Box>
             
@@ -215,9 +212,9 @@ const Header = () => {
               display: 'flex',
               justifyContent: 'flex-end'
             }}>
-              <IconButton size="small" onClick={handleLanguageClick} sx={{ color: 'white' }}>
-                <LanguageIcon fontSize="small" />
-                <Typography variant="body2" sx={{ ml: 0.5, color: 'white' }}>
+              <IconButton size="small" onClick={handleLanguageClick} sx={{ color: 'white', p: 0.45 }}>
+                <LanguageIcon sx={{ fontSize: '1.05rem' }} />
+                <Typography variant="body2" sx={{ ml: 0.4, color: 'white', fontSize: '0.78rem', fontWeight: 800 }}>
                   {getCurrentLanguageData()?.native_name || 'English'}
                 </Typography>
               </IconButton>
@@ -243,52 +240,33 @@ const Header = () => {
 
       {/* Main Navigation */}
       <AppBar
-        position="sticky"
+        position="static"
         sx={{
           background: 'linear-gradient(120deg, #0b6b3b 0%, #108a4d 50%, #1f9d5f 100%)',
-          backgroundSize: '220% 220%',
-          animation: 'headerFlow 12s ease-in-out infinite',
-          boxShadow: '0 10px 24px rgba(11,107,59,0.32)',
+          boxShadow: '0 2px 8px rgba(11,107,59,0.2)',
           overflow: 'hidden',
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            inset: '-40% -10% auto -10%',
-            height: '220px',
-            background: 'radial-gradient(circle at 30% 35%, rgba(255,255,255,0.18), transparent 55%)',
-            animation: 'headerGlow 9s ease-in-out infinite',
-            pointerEvents: 'none',
-          },
-          '@keyframes headerFlow': {
-            '0%': { backgroundPosition: '0% 50%' },
-            '50%': { backgroundPosition: '100% 50%' },
-            '100%': { backgroundPosition: '0% 50%' },
-          },
-          '@keyframes headerGlow': {
-            '0%': { transform: 'translateX(-6%) scale(1)', opacity: 0.65 },
-            '50%': { transform: 'translateX(4%) scale(1.06)', opacity: 1 },
-            '100%': { transform: 'translateX(-6%) scale(1)', opacity: 0.65 },
-          },
           '@keyframes shorianMove': {
             '0%': { transform: 'translateX(100%)' },
             '100%': { transform: 'translateX(-100%)' },
           },
+          '&::before': {
+            display: 'none',
+          },
         }}
       >
         <Container maxWidth="xl">
-          <Box sx={{ py: 3, position: 'relative', zIndex: 1 }}>
+          <Box sx={{ py: { xs: 0.65, md: 0.75 }, position: 'relative', zIndex: 1 }}>
             {/* Logo - Centered */}
             <Box 
               sx={{
                 textAlign: 'center',
-                mb: 4.75,
+                mb: 0.65,
                 cursor: 'pointer',
-                maxWidth: 760,
+                maxWidth: 320,
                 mx: 'auto',
-                px: { xs: 2, md: 3 },
-                py: { xs: 1.5, md: 2 },
-                transform: 'translateY(-6px)',
-                borderRadius: 3,
+                px: { xs: 0.7, md: 1 },
+                py: { xs: 0.35, md: 0.45 },
+                borderRadius: 2,
                 border: '1px solid rgba(255,255,255,0.28)',
                 background: 'linear-gradient(180deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.08) 100%)',
                 backdropFilter: 'blur(3px)',
@@ -298,13 +276,13 @@ const Header = () => {
               <Typography
                 variant="h3"
                 sx={{
-                  fontWeight: 800,
-                  fontSize: { xs: '2rem', md: '2.5rem' },
+                  fontWeight: 900,
+                  fontSize: { xs: '1.15rem', md: '1.35rem' },
                   color: '#FFFFFF',
                   letterSpacing: 0,
-                  lineHeight: 1.25,
+                  lineHeight: 1.1,
                   wordBreak: 'keep-all',
-                  textShadow: '0 6px 14px rgba(0,0,0,0.24)',
+                  textShadow: '0 2px 7px rgba(0,0,0,0.16)',
                 }}
               >
                 شريان
@@ -312,10 +290,10 @@ const Header = () => {
               <Typography
                 variant="h5"
                 sx={{
-                  fontWeight: 700,
-                  fontSize: { xs: '1.2rem', md: '1.5rem' },
+                  fontWeight: 800,
+                  fontSize: { xs: '0.74rem', md: '0.86rem' },
                   color: '#E8FFF1',
-                  letterSpacing: { xs: '1px', md: '2px' },
+                  letterSpacing: { xs: '0.5px', md: '0.9px' },
                 }}
               >
                 SHORYAN MEDICAL
@@ -323,12 +301,12 @@ const Header = () => {
               <Typography
                 variant="subtitle1"
                 sx={{
-                  mt: 1,
-                  mb: 0.5,
+                  mt: 0.15,
+                  mb: 0,
                   color: 'rgba(255,255,255,0.9)',
-                  fontSize: { xs: '1.05rem', md: '1.25rem' },
+                  fontSize: { xs: '0.64rem', md: '0.74rem' },
                   fontWeight: 700,
-                  letterSpacing: '0.5px'
+                  letterSpacing: '0.35px'
                 }}
               >
                 شريكك الموثوق في المعدات الطبية
@@ -337,9 +315,9 @@ const Header = () => {
 
             <Box
               sx={{
-                mt: 0.5,
-                mb: 2.5,
-                height: { xs: 38, md: 40 },
+                mt: 0,
+                mb: 0.6,
+                height: { xs: 18, md: 20 },
                 borderRadius: '999px',
                 border: '1px solid rgba(255,255,255,0.35)',
                 background: 'rgba(255,255,255,0.12)',
@@ -356,14 +334,14 @@ const Header = () => {
                   whiteSpace: 'nowrap',
                   color: '#FFFFFF',
                   fontWeight: 800,
-                  letterSpacing: { xs: '1px', md: '1.5px' },
-                  fontSize: { xs: '0.85rem', md: '0.95rem' },
+                  letterSpacing: { xs: '0.5px', md: '0.7px' },
+                  fontSize: { xs: '0.68rem', md: '0.78rem' },
                   textTransform: 'uppercase',
-                  animation: 'shorianMove 13s linear infinite',
-                  textShadow: '0 4px 12px rgba(0,0,0,0.22)',
+                  textShadow: '0 1px 5px rgba(0,0,0,0.18)',
+                  animation: 'shorianMove 12s linear infinite',
                 }}
               >
-                SHORYAN MEDICAL • SHORYAN MEDICAL • SHORYAN MEDICAL • SHORYAN MEDICAL • SHORYAN MEDICAL
+                SHORYAN MEDICAL • SHORYAN MEDICAL • SHORYAN MEDICAL
               </Typography>
             </Box>
 
@@ -375,10 +353,10 @@ const Header = () => {
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  gap: 1.5,
+                  gap: 0.45,
                 }}>
                   {/* First Line of Navigation */}
-                  <Box sx={{ display: 'flex', gap: 3, alignItems: 'center' }}>
+                  <Box sx={{ display: 'flex', gap: 1.1, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
                     {navItems.slice(0, 7).map((item) => (
                       <Typography
                         key={item.id}
@@ -387,7 +365,7 @@ const Header = () => {
                           color: '#ffffff',
                           cursor: item.route && item.route !== '#' ? 'pointer' : 'default',
                           fontSize: '0.9rem',
-                          fontWeight: 700,
+                          fontWeight: 800,
                           '&:hover': {
                             color: '#ffffff',
                             textDecoration: item.route && item.route !== '#' ? 'underline' : 'none',
@@ -403,7 +381,7 @@ const Header = () => {
                   </Box>
                   
                   {/* Second Line of Navigation */}
-                  <Box sx={{ display: 'flex', gap: 3, alignItems: 'center' }}>
+                  <Box sx={{ display: 'flex', gap: 1.1, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
                     {navItems.slice(7).map((item) => (
                       <Typography
                         key={item.id}
@@ -412,7 +390,7 @@ const Header = () => {
                           color: '#ffffff',
                           cursor: item.route && item.route !== '#' ? 'pointer' : 'default',
                           fontSize: '0.9rem',
-                          fontWeight: 700,
+                          fontWeight: 800,
                           '&:hover': {
                             color: '#ffffff',
                             textDecoration: item.route && item.route !== '#' ? 'underline' : 'none',
@@ -426,7 +404,7 @@ const Header = () => {
                       </Typography>
                     ))}
                     {/* Search Box and Cart Icon */}
-                    <Box sx={{ display: 'flex', gap: 1, ml: 0.5, alignItems: 'center' }}>
+                    <Box sx={{ display: 'flex', gap: 0.6, ml: 0.3, alignItems: 'center' }}>
                       <TextField
                         size="small"
                         placeholder={t('search.placeholder', 'Search products...')}
@@ -434,9 +412,9 @@ const Header = () => {
                         onChange={handleSearchChange}
                         onKeyPress={handleSearchKeyPress}
                         sx={{
-                          width: '200px',
+                          width: '160px',
                           '& .MuiOutlinedInput-root': {
-                            height: '32px',
+                            height: '30px',
                             backgroundColor: 'rgba(255,255,255,0.97)',
                             '& fieldset': {
                               borderColor: 'rgba(255,255,255,0.95)',
@@ -484,8 +462,8 @@ const Header = () => {
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  gap: 2,
-                  mt: -2,
+                  gap: 0.6,
+                    mt: 0,
                 }}>
                   {/* Search Box */}
                   <TextField
@@ -495,9 +473,9 @@ const Header = () => {
                     onChange={handleSearchChange}
                     onKeyPress={handleSearchKeyPress}
                     sx={{
-                      width: '250px',
+                      width: '200px',
                       '& .MuiOutlinedInput-root': {
-                        height: '36px',
+                        height: '32px',
                         backgroundColor: 'rgba(255,255,255,0.97)',
                         '& fieldset': {
                           borderColor: 'rgba(255,255,255,0.95)',

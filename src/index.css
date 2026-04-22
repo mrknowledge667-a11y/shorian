@@ -92,6 +92,18 @@ code {
     linear-gradient(180deg, #f7fbff 0%, #f4faf7 48%, #ffffff 100%);
 }
 
+.page-transition-wrapper.admin-route-wrapper {
+  animation: none;
+  overflow: visible;
+  isolation: auto;
+  background: #f5f7fa;
+}
+
+.page-transition-wrapper.admin-route-wrapper::before,
+.page-transition-wrapper.admin-route-wrapper::after {
+  display: none;
+}
+
 .page-transition-wrapper::before,
 .page-transition-wrapper::after {
   content: '';

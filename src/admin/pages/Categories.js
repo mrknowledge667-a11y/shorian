@@ -339,9 +339,23 @@ function Categories() {
       </TableContainer>
 
       {/* Add/Edit Dialog */}
-      <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
+      <Dialog
+        open={dialogOpen}
+        onClose={handleCloseDialog}
+        fullWidth
+        maxWidth={false}
+        scroll="paper"
+        PaperProps={{
+          sx: {
+            width: { xs: '95vw', md: '70vw' },
+            maxWidth: { xs: '95vw', md: '70vw' },
+            maxHeight: '90vh',
+            m: { xs: 1, md: 2 },
+          },
+        }}
+      >
         <DialogTitle>{editingCategory ? 'Edit Category' : 'Add New Category'}</DialogTitle>
-        <DialogContent>
+        <DialogContent dividers>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 2 }}>
             <TextField
               label="Category Name"

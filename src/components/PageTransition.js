@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 
 const PageTransition = ({ children }) => {
   const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
 
   useEffect(() => {
     // Trigger re-render and animation on route change
@@ -10,7 +11,10 @@ const PageTransition = ({ children }) => {
   }, [location]);
 
   return (
-    <div className="page-transition-wrapper" key={location.pathname}>
+    <div
+      className={`page-transition-wrapper${isAdminRoute ? ' admin-route-wrapper' : ''}`}
+      key={location.pathname}
+    >
       {children}
     </div>
   );

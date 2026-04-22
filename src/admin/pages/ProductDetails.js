@@ -47,13 +47,14 @@ import { supabase } from '../../api/supabaseClient';
 import { useAdminLanguage } from '../../contexts/AdminLanguageContext';
 
 const ProductDetails = () => {
-  const { currentLanguage } = useAdminLanguage();
+  const { adminLanguage } = useAdminLanguage();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [imageDialogOpen, setImageDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
+    name: '',
     detailed_description: '',
     specifications: [],
     features: [],
@@ -68,7 +69,7 @@ const ProductDetails = () => {
 
   useEffect(() => {
     fetchProducts();
-  }, [currentLanguage]);
+  }, [adminLanguage]);
 
   const fetchProducts = async () => {
     try {
@@ -87,13 +88,13 @@ const ProductDetails = () => {
       if (error) throw error;
 
       // Fetch translations if needed
-      if (currentLanguage !== 'en' && data) {
+      if (adminLanguage !== 'en' && data) {
         const productIds = data.map(p => p.id);
         const { data: translations } = await supabase
           .from('products_translations')
           .select('*')
           .in('product_id', productIds)
-          .eq('language_code', currentLanguage);
+          .eq('language_code', adminLanguage);
 
         if (translations) {
           const translationMap = translations.reduce((acc, trans) => {
@@ -140,12 +141,19 @@ const ProductDetails = () => {
   const handleEditClick = async (product) => {
     setSelectedProduct(product);
     setFormData({
+      name: product.name || '',
       detailed_description: product.detailed_description || '',
       specifications: product.specifications || {},
       features: product.features || [],
     });
     await fetchProductImages(product.id);
     setEditDialogOpen(true);
+  };
+
+  const handleManageImagesClick = async (product) => {
+    setSelectedProduct(product);
+    await fetchProductImages(product.id);
+    setImageDialogOpen(true);
   };
 
   const handleInputChange = (field, value) => {
@@ -206,6 +214,7 @@ const ProductDetails = () => {
         : null;
 
       const updateData = {
+        name: formData.name || selectedProduct.name || null,
         detailed_description: formData.detailed_description || null,
         specifications: specifications,
         features: features,
@@ -213,7 +222,7 @@ const ProductDetails = () => {
 
       console.log('Saving data:', updateData);
 
-      if (!currentLanguage || currentLanguage === 'en') {
+      if (!adminLanguage || adminLanguage === 'en') {
         // Update main product table
         const { data, error } = await supabase
           .from('products')
@@ -232,7 +241,7 @@ const ProductDetails = () => {
           .from('products_translations')
           .select('id')
           .eq('product_id', selectedProduct.id)
-          .eq('language_code', currentLanguage)
+            .eq('language_code', adminLanguage)
           .maybeSingle();
 
         if (fetchError) {
@@ -244,7 +253,10 @@ const ProductDetails = () => {
           const { data, error } = await supabase
             .from('products_translations')
             .update({
-              ...updateData,
+              name: formData.name || selectedProduct.name || null,
+              detailed_description: updateData.detailed_description,
+              specifications: updateData.specifications,
+              features: updateData.features,
               updated_at: new Date().toISOString(),
             })
             .eq('id', existing.id)
@@ -260,10 +272,12 @@ const ProductDetails = () => {
             .from('products_translations')
             .insert({
               product_id: selectedProduct.id,
-              language_code: currentLanguage,
-              name: selectedProduct.name,
+                language_code: adminLanguage,
+              name: formData.name || selectedProduct.name,
               description: selectedProduct.description,
-              ...updateData,
+              detailed_description: updateData.detailed_description,
+              specifications: updateData.specifications,
+              features: updateData.features,
             })
             .select();
 
@@ -352,8 +366,39 @@ const ProductDetails = () => {
         .select();
 
       if (dbError) {
-        console.error('Database error:', dbError);
-        throw dbError;
+        const isRlsError =
+          dbError?.code === '42501' ||
+          /row-level security|violates row-level security policy/i.test(dbError?.message || '');
+
+        if (!isRlsError) {
+          console.error('Database error:', dbError);
+          throw dbError;
+        }
+
+        // Fallback path: at least persist a visible product image if product_images insert is blocked.
+        const { error: productUpdateError } = await supabase
+          .from('products')
+          .update({ image_url: publicUrl })
+          .eq('id', selectedProduct.id);
+
+        if (productUpdateError) {
+          console.error('Fallback update error:', productUpdateError);
+          throw dbError;
+        }
+
+        await fetchProducts();
+        setProductImages([
+          {
+            id: 0,
+            image_url: publicUrl,
+            alt_text: selectedProduct.name,
+            sort_order: 0,
+            is_primary: true,
+          },
+        ]);
+        setSuccessMessage('Image uploaded and set as product main image. Apply RLS migration for full gallery support.');
+        setShowSuccess(true);
+        return;
       }
 
       console.log('Database insert successful:', dbData);
@@ -439,44 +484,73 @@ const ProductDetails = () => {
 
   return (
     <Box>
-      <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Box
+        sx={{
+          mb: 3,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: { xs: 'flex-start', sm: 'center' },
+          flexDirection: { xs: 'column', sm: 'row' },
+          gap: { xs: 1.5, sm: 0 },
+        }}
+      >
         <Typography variant="h4" sx={{ fontWeight: 600, color: '#2c2976' }}>
           Product Details Management
         </Typography>
         <Chip
-          label={`Language: ${(currentLanguage || 'en').toUpperCase()}`}
+          label={`Language: ${(adminLanguage || 'en').toUpperCase()}`}
           color="primary"
         />
       </Box>
 
-      <Paper sx={{ borderRadius: '15px', overflow: 'hidden' }}>
-        <TableContainer>
-          <Table>
+      <Grid container spacing={2}>
+        <Grid item xs={12} lg={9}>
+          <Paper sx={{ borderRadius: '15px', overflow: 'hidden' }}>
+            <TableContainer sx={{ overflowX: 'auto' }}>
+              <Table sx={{ minWidth: 880 }}>
             <TableHead>
               <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
                 <TableCell sx={{ fontWeight: 600 }}>Product</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Category</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Details</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Images</TableCell>
-                <TableCell sx={{ fontWeight: 600 }} align="center">Actions</TableCell>
+                <TableCell
+                  sx={{
+                    fontWeight: 600,
+                    position: 'sticky',
+                    right: 0,
+                    backgroundColor: '#f5f5f5',
+                    zIndex: 2,
+                    boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)',
+                    minWidth: 130,
+                  }}
+                  align="center"
+                >
+                  Select
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={5} align="center" sx={{ py: 5 }}>
+                  <TableCell colSpan={4} align="center" sx={{ py: 5 }}>
                     <CircularProgress />
                   </TableCell>
                 </TableRow>
               ) : products.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} align="center" sx={{ py: 5 }}>
+                  <TableCell colSpan={4} align="center" sx={{ py: 5 }}>
                     <Typography color="textSecondary">No products found</Typography>
                   </TableCell>
                 </TableRow>
               ) : (
                 products.map((product) => (
-                  <TableRow key={product.id} hover>
+                  <TableRow
+                    key={product.id}
+                    hover
+                    selected={selectedProduct?.id === product.id}
+                    onClick={() => setSelectedProduct(product)}
+                    sx={{ cursor: 'pointer' }}
+                  >
                     <TableCell>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                         {product.image_url && (
@@ -516,45 +590,92 @@ const ProductDetails = () => {
                         )}
                       </Box>
                     </TableCell>
-                    <TableCell>
+                    <TableCell
+                      align="center"
+                      sx={{
+                        position: 'sticky',
+                        right: 0,
+                        backgroundColor: 'background.paper',
+                        zIndex: 1,
+                        boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)',
+                        minWidth: 130,
+                      }}
+                    >
                       <Button
                         size="small"
-                        startIcon={<ImageIcon />}
-                        onClick={() => {
+                        variant={selectedProduct?.id === product.id ? 'contained' : 'outlined'}
+                        onClick={(e) => {
+                          e.stopPropagation();
                           setSelectedProduct(product);
-                          fetchProductImages(product.id);
-                          setImageDialogOpen(true);
                         }}
                       >
-                        Manage Images
+                        {selectedProduct?.id === product.id ? 'Selected' : 'Select'}
                       </Button>
-                    </TableCell>
-                    <TableCell align="center">
-                      <Tooltip title="Edit Details">
-                        <IconButton
-                          size="small"
-                          onClick={() => handleEditClick(product)}
-                          sx={{ color: '#3B9FD9' }}
-                        >
-                          <Edit />
-                        </IconButton>
-                      </Tooltip>
                     </TableCell>
                   </TableRow>
                 ))
               )}
             </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
+              </Table>
+            </TableContainer>
+          </Paper>
+        </Grid>
+
+        <Grid item xs={12} lg={3}>
+          <Paper
+            sx={{
+              p: 2,
+              borderRadius: '15px',
+              position: { lg: 'sticky' },
+              top: { lg: 90 },
+            }}
+          >
+            <Typography variant="h6" sx={{ mb: 1 }}>
+              Product Actions
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              {selectedProduct ? selectedProduct.name : 'Select a product from the table'}
+            </Typography>
+
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.25 }}>
+              <Button
+                fullWidth
+                variant="contained"
+                startIcon={<Edit />}
+                disabled={!selectedProduct}
+                onClick={() => selectedProduct && handleEditClick(selectedProduct)}
+              >
+                Edit Details
+              </Button>
+              <Button
+                fullWidth
+                variant="outlined"
+                startIcon={<ImageIcon />}
+                disabled={!selectedProduct}
+                onClick={() => selectedProduct && handleManageImagesClick(selectedProduct)}
+              >
+                Manage Images
+              </Button>
+            </Box>
+          </Paper>
+        </Grid>
+      </Grid>
 
       {/* Edit Details Dialog */}
       <Dialog
         open={editDialogOpen}
         onClose={() => setEditDialogOpen(false)}
-        maxWidth="md"
         fullWidth
-        PaperProps={{ sx: { borderRadius: '15px' } }}
+        maxWidth={false}
+        scroll="paper"
+        PaperProps={{
+          sx: {
+            borderRadius: '15px',
+            width: { xs: '96vw', sm: '90vw', md: '80vw', lg: '1100px' },
+            maxWidth: { xs: '96vw', sm: '90vw', md: '80vw', lg: '1100px' },
+            maxHeight: '92vh',
+          },
+        }}
       >
         <DialogTitle sx={{ 
           borderBottom: '1px solid #e0e0e0',
@@ -569,8 +690,18 @@ const ProductDetails = () => {
             <Close />
           </IconButton>
         </DialogTitle>
-        <DialogContent sx={{ mt: 3 }}>
+        <DialogContent dividers sx={{ mt: 1 }}>
           <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Product Name"
+                value={formData.name}
+                onChange={(e) => handleInputChange('name', e.target.value)}
+                placeholder="Enter product name"
+              />
+            </Grid>
+
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -694,9 +825,17 @@ const ProductDetails = () => {
       <Dialog
         open={imageDialogOpen}
         onClose={() => setImageDialogOpen(false)}
-        maxWidth="lg"
         fullWidth
-        PaperProps={{ sx: { borderRadius: '15px' } }}
+        maxWidth={false}
+        scroll="paper"
+        PaperProps={{
+          sx: {
+            borderRadius: '15px',
+            width: { xs: '96vw', sm: '92vw', md: '84vw', lg: '1240px' },
+            maxWidth: { xs: '96vw', sm: '92vw', md: '84vw', lg: '1240px' },
+            maxHeight: '92vh',
+          },
+        }}
       >
         <DialogTitle sx={{ 
           borderBottom: '1px solid #e0e0e0',
@@ -732,7 +871,7 @@ const ProductDetails = () => {
             </IconButton>
           </Box>
         </DialogTitle>
-        <DialogContent sx={{ mt: 3 }}>
+        <DialogContent dividers sx={{ mt: 1 }}>
           <Grid container spacing={2}>
             {productImages.length === 0 ? (
               <Grid item xs={12}>

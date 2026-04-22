@@ -44,6 +44,51 @@ const HEADING = '#2c2976';
 const TEXT = '#525252';
 const MUTED = '#8a8a8a';
 
+const PLACEHOLDER_IMAGE = '/placeholder-product.svg';
+
+const toPublicImageUrl = (value) => {
+  if (!value || typeof value !== 'string') return '';
+  const trimmed = value.trim();
+  if (!trimmed) return '';
+
+  // Already an absolute URL.
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+
+  // Convert storage object path to public URL.
+  const normalizedPath = trimmed
+    .replace(/^\/?storage\/v1\/object\/(public\/)?images\//i, '')
+    .replace(/^\/+/, '');
+
+  const { data } = supabase.storage.from('images').getPublicUrl(normalizedPath);
+  return data?.publicUrl || '';
+};
+
+const parseFeaturesValue = (value) => {
+  if (Array.isArray(value)) return value.filter(Boolean);
+  if (typeof value === 'string') {
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed.filter(Boolean) : [];
+    } catch {
+      return value.trim() ? [value.trim()] : [];
+    }
+  }
+  return [];
+};
+
+const parseSpecificationsValue = (value) => {
+  if (value && typeof value === 'object' && !Array.isArray(value)) return value;
+  if (typeof value === 'string') {
+    try {
+      const parsed = JSON.parse(value);
+      return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+    } catch {
+      return {};
+    }
+  }
+  return {};
+};
+
 const ProductDetails = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
@@ -98,7 +143,7 @@ const ProductDetails = () => {
           .select('*')
           .eq('product_id', productId)
           .eq('language_code', currentLanguage)
-          .single();
+          .maybeSingle();
 
         if (translation) {
           productData.name = translation.name || productData.name;
@@ -118,13 +163,25 @@ const ProductDetails = () => {
         .eq('product_id', parseInt(productId, 10))
         .order('sort_order', { ascending: true });
 
-      const images =
-        imagesData && imagesData.length > 0
-          ? imagesData
-          : [{ id: 0, image_url: productData.image_url, alt_text: productData.name, is_primary: true }];
+      const sanitizedProduct = sanitizeProductRecord(productData);
+      const normalizedImages = (imagesData || [])
+        .map((img) => ({
+          ...img,
+          image_url: toPublicImageUrl(img?.image_url),
+        }))
+        .filter((img) => img?.image_url);
 
-      setProduct(sanitizeProductRecord(productData));
+      const fallbackMainImage = toPublicImageUrl(sanitizedProduct?.image_url);
+      const images =
+        normalizedImages.length > 0
+          ? normalizedImages
+          : fallbackMainImage
+          ? [{ id: 0, image_url: fallbackMainImage, alt_text: sanitizedProduct.name, is_primary: true }]
+          : [];
+
+      setProduct(sanitizedProduct);
       setProductImages(images);
+      setSelectedImageIndex(0);
     } catch (error) {
       // Non-blocking: keep page stable with empty state handling
       // eslint-disable-next-line no-console
@@ -199,6 +256,17 @@ const ProductDetails = () => {
   const currentImage = useMemo(
     () => productImages[selectedImageIndex] || productImages[0],
     [productImages, selectedImageIndex]
+  );
+
+  const descriptionText = useMemo(
+    () => product?.detailed_description || product?.description || '',
+    [product]
+  );
+
+  const parsedFeatures = useMemo(() => parseFeaturesValue(product?.features), [product?.features]);
+  const parsedSpecifications = useMemo(
+    () => parseSpecificationsValue(product?.specifications),
+    [product?.specifications]
   );
 
   if (loading) {
@@ -304,7 +372,7 @@ const ProductDetails = () => {
                       loading="lazy"
                       decoding="async"
                       onError={(e) => {
-                        e.currentTarget.src = product.image_url || '/placeholder-image.png';
+                        e.currentTarget.src = PLACEHOLDER_IMAGE;
                       }}
                       style={{
                         position: 'absolute',
@@ -546,7 +614,7 @@ const ProductDetails = () => {
                 </Box>
 
                 {/* Detailed Description */}
-                {product.detailed_description && (
+                {descriptionText && (
                   <Paper
                     elevation={0}
                     sx={{
@@ -564,13 +632,13 @@ const ProductDetails = () => {
                       {t('product.description', 'Description')}
                     </Typography>
                     <Typography sx={{ color: TEXT, lineHeight: 1.8, whiteSpace: 'pre-line' }}>
-                      {product.detailed_description}
+                      {descriptionText}
                     </Typography>
                   </Paper>
                 )}
 
                 {/* Features */}
-                {Array.isArray(product.features) && product.features.length > 0 && (
+                {parsedFeatures.length > 0 && (
                   <Paper
                     elevation={0}
                     sx={{
@@ -588,7 +656,7 @@ const ProductDetails = () => {
                       {t('product.features', 'Features')}
                     </Typography>
                     <Box component="ul" sx={{ pl: 3, mb: 0 }}>
-                      {product.features.map((feature, index) => (
+                      {parsedFeatures.map((feature, index) => (
                         <Typography
                           key={`${index}-${feature}`}
                           component="li"
@@ -608,7 +676,7 @@ const ProductDetails = () => {
                 )}
 
                 {/* Specifications */}
-                {product.specifications && Object.keys(product.specifications).length > 0 && (
+                {Object.keys(parsedSpecifications).length > 0 && (
                   <Paper
                     elevation={0}
                     sx={{
@@ -626,7 +694,7 @@ const ProductDetails = () => {
                       {t('product.specifications', 'Specifications')}
                     </Typography>
                     <Grid container spacing={1.5}>
-                      {Object.entries(product.specifications).map(([key, value]) => (
+                      {Object.entries(parsedSpecifications).map(([key, value]) => (
                         <Grid item xs={12} sm={6} key={key}>
                           <Typography sx={{ color: MUTED, fontSize: '.9rem', mb: 0.25 }}>
                             {key}
@@ -896,7 +964,7 @@ const ProductDetails = () => {
               src={currentImage.image_url}
               alt={currentImage.alt_text || product.name}
               onError={(e) => {
-                e.currentTarget.src = product.image_url || '/placeholder-image.png';
+                e.currentTarget.src = PLACEHOLDER_IMAGE;
               }}
               style={{
                 width: '100%',
