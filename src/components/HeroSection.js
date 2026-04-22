@@ -62,9 +62,47 @@ const HeroSection = () => {
           bottom: 0,
           background: 'linear-gradient(135deg, rgba(21,101,192,0.6) 0%, rgba(13,71,161,0.5) 50%, rgba(27,94,32,0.6) 100%)',
         },
+        '@keyframes shoryanHeroPulse': {
+          '0%, 100%': {
+            opacity: 0.85,
+            transform: 'translateY(-3.2cm) scale(1)',
+          },
+          '50%': {
+            opacity: 1,
+            transform: 'translateY(calc(-3.2cm - 4px)) scale(1.02)',
+          },
+        },
       }}
     >
       <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
+        <Fade in={!loading} timeout={900}>
+          <Typography
+            variant="h2"
+            component="h2"
+            sx={{
+              color: '#0b6b3b',
+              fontWeight: 900,
+              textAlign: 'center',
+              mb: 1.5,
+              letterSpacing: { xs: '1px', md: '3px' },
+              fontSize: { xs: '2rem', md: '3.6rem' },
+              textTransform: 'uppercase',
+              textShadow: '0 4px 12px rgba(0,0,0,0.18)',
+              background: 'rgba(255,255,255,0.9)',
+              border: '2px solid #0b6b3b',
+              borderRadius: '16px',
+              display: 'table',
+              mx: 'auto',
+              px: { xs: 1.6, md: 3 },
+              py: { xs: 0.35, md: 0.6 },
+              boxShadow: '0 8px 22px rgba(11,107,59,0.28)',
+              animation: 'shoryanHeroPulse 3.8s ease-in-out infinite',
+            }}
+          >
+            SHORYAN MEDICAL
+          </Typography>
+        </Fade>
+
         <Fade in={!loading} timeout={1000}>
           <Typography
             variant="h3"

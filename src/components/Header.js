@@ -245,10 +245,6 @@ const Header = () => {
           background: 'linear-gradient(120deg, #0b6b3b 0%, #108a4d 50%, #1f9d5f 100%)',
           boxShadow: '0 2px 8px rgba(11,107,59,0.2)',
           overflow: 'hidden',
-          '@keyframes shorianMove': {
-            '0%': { transform: 'translateX(100%)' },
-            '100%': { transform: 'translateX(-100%)' },
-          },
           '&::before': {
             display: 'none',
           },
@@ -310,38 +306,6 @@ const Header = () => {
                 }}
               >
                 شريكك الموثوق في المعدات الطبية
-              </Typography>
-            </Box>
-
-            <Box
-              sx={{
-                mt: 0,
-                mb: 0.6,
-                height: { xs: 18, md: 20 },
-                borderRadius: '999px',
-                border: '1px solid rgba(255,255,255,0.35)',
-                background: 'rgba(255,255,255,0.12)',
-                position: 'relative',
-                overflow: 'hidden',
-                backdropFilter: 'blur(3px)',
-              }}
-            >
-              <Typography
-                sx={{
-                  position: 'absolute',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  whiteSpace: 'nowrap',
-                  color: '#FFFFFF',
-                  fontWeight: 800,
-                  letterSpacing: { xs: '0.5px', md: '0.7px' },
-                  fontSize: { xs: '0.68rem', md: '0.78rem' },
-                  textTransform: 'uppercase',
-                  textShadow: '0 1px 5px rgba(0,0,0,0.18)',
-                  animation: 'shorianMove 12s linear infinite',
-                }}
-              >
-                SHORYAN MEDICAL • SHORYAN MEDICAL • SHORYAN MEDICAL
               </Typography>
             </Box>
 
